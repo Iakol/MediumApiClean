@@ -1,0 +1,6 @@
+@TopicDomain_HostAddress = http://localhost:5122
+
+GET {{TopicDomain_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
