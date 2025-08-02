@@ -1,10 +1,11 @@
 ﻿using TopicDomain.Application.DTO;
 using TopicDomain.Application.Interfaces;
 using TopicDomain.Domain;
+using TopicDomain.Presentation.UseCases;
 
 namespace TopicDomain.Application.UseCases
 {
-    public class GetTopicDTOCase(ITopicRepository _topicRepository, ILogger<FindTopicsByNameCase> _logger)
+    public class GetTopicDTOCase(ITopicRepository _topicRepository, ILogger<FindTopicsByNameCase> _logger) : IGetTopicDTOCase
     {
         public async Task<Result<Topic>> HandleAsync(string id)
         {

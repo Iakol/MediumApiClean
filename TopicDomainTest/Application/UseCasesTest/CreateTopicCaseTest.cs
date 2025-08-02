@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TopicDomain.Application.Interfaces;
 using TopicDomain.Application.UnitOfWork;
-using TopicDomain.Application.UseCases.CreateTopic;
+using TopicDomain.Application.UseCases;
 using TopicDomain.Domain;
 using TopicDomain.Enum;
 
@@ -28,7 +28,7 @@ namespace TopicDomainTest.Application.UseCasesTest
         }
 
         [Fact]
-        public async Task TestTestCase() 
+        public async Task EmptyNameOfTopic() 
         {
             CreateTopicCase Case = new CreateTopicCase(_CreateTopiсUnitOfWorkMock.Object, loggerMock.Object);
             Topic topic = new Topic("    ", TopicCreatorSourseEnum.Manager, null, null);
@@ -43,5 +43,37 @@ namespace TopicDomainTest.Application.UseCasesTest
 
 
         }
+
+        [Fact]
+        public async Task RightTopicTest() 
+        {
+            CreateTopicCase Case = new CreateTopicCase(_CreateTopiсUnitOfWorkMock.Object, loggerMock.Object);
+            Topic topic = new Topic("Test", TopicCreatorSourseEnum.Manager);
+
+            var result = await Case.HandleAsync(topic);
+
+            Assert.True(result.IsSuccess);
+            Assert.Null(result.Error);
+
+            loggerMock.VerifyLog(l => l.LogError("Name is Empty"), Times.Never);
+            _CreateTopiсUnitOfWorkMock.Verify(c => c.CreateTopicAsync(It.IsAny<Topic>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task UnitErrorTopicTest()
+        {
+            _CreateTopiсUnitOfWorkMock.Setup(c => c.CreateTopicAsync(It.IsAny<Topic>())).ThrowsAsync(new Exception("Database error"));
+            CreateTopicCase Case = new CreateTopicCase(_CreateTopiсUnitOfWorkMock.Object, loggerMock.Object);
+            Topic topic = new Topic("Test", TopicCreatorSourseEnum.Manager);
+
+            var result = await Case.HandleAsync(topic);
+
+            Assert.False(result.IsSuccess);
+            Assert.NotNull(result.Error);
+
+            loggerMock.VerifyLog(l => l.LogError("Database error"), Times.Once);
+            _CreateTopiсUnitOfWorkMock.Verify(c => c.CreateTopicAsync(It.IsAny<Topic>()), Times.Once);
+        }
+
     }
 }

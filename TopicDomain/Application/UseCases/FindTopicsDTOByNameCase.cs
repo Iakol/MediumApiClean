@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using TopicDomain.Application.DTO;
 using TopicDomain.Application.Interfaces;
 using TopicDomain.Domain;
+using TopicDomain.Presentation.UseCases;
 
 namespace TopicDomain.Application.UseCases
 {
-    public class FindTopicsDTOByNameCase(ITopicRepository _topicRepository, ILogger<FindTopicsByNameCase> _logger, IMapper _mapper)
+    public class FindTopicsDTOByNameCase(ITopicRepository _topicRepository, ILogger<FindTopicsDTOByNameCase> _logger, IMapper _mapper) : IFindTopicsDTOByNameCase
     {
         public async Task<Result<List<TopicDTO>>> HandleAsync(string name) 
         {

@@ -7,10 +7,10 @@ using System.Text;
 using TopicDomain.Application.Interfaces;
 using TopicDomain.Application.UnitOfWork;
 using TopicDomain.Application.UseCases;
-using TopicDomain.Application.UseCases.CreateTopic;
 using TopicDomain.Infrastructure.Database.DBContext;
 using TopicDomain.Infrastructure.Database.Repositories;
 using TopicDomain.Infrastructure.Database.UnitsOfWork;
+using TopicDomain.Presentation.UseCases;
 
 var builder = WebApplication.CreateBuilder(args);
 var envName = builder.Environment.EnvironmentName;
@@ -23,14 +23,14 @@ if (envName.Equals("Development") || envName.Equals("DevelopmentTestUser"))
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<ICreateTopicCase,CreateTopicCase>();
-builder.Services.AddScoped<FindTopicsByNameCase>();
-builder.Services.AddScoped<FindTopicsDTOByNameCase>();
-builder.Services.AddScoped<GetLast100TopicsCase>();
-builder.Services.AddScoped<GetTopicCase>();
-builder.Services.AddScoped<GetTopicDTOByIdCase>();
-builder.Services.AddScoped<GetTopicDTOByIdsCase>();
-builder.Services.AddScoped<GetTopicDTOCase>();
-builder.Services.AddScoped<GetTopicsByIdsCase>();
+builder.Services.AddScoped<IFindTopicsByNameCase, FindTopicsByNameCase>();
+builder.Services.AddScoped<IFindTopicsDTOByNameCase,FindTopicsDTOByNameCase>();
+builder.Services.AddScoped<IGetLast100TopicsCase,GetLast100TopicsCase>();
+builder.Services.AddScoped<IGetTopicCase,GetTopicCase>();
+builder.Services.AddScoped<IGetTopicDTOByIdCase,GetTopicDTOByIdCase>();
+builder.Services.AddScoped<IGetTopicDTOByIdsCase,GetTopicDTOByIdsCase>();
+builder.Services.AddScoped<IGetTopicDTOCase,GetTopicDTOCase>();
+builder.Services.AddScoped<IGetTopicsByIdsCase,GetTopicsByIdsCase>();
 
 builder.Services.AddScoped<ITopicRepository,TopicRepository>();
 

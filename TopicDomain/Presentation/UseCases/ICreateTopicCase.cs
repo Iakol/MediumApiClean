@@ -1,7 +1,7 @@
 ﻿using TopicDomain.Application.DTO;
 using TopicDomain.Domain;
 
-namespace TopicDomain.Application.UseCases.CreateTopic
+namespace TopicDomain.Presentation.UseCases
 {
     public interface ICreateTopicCase
     {

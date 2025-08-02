@@ -3,10 +3,11 @@ using Microsoft.Extensions.Logging;
 using TopicDomain.Application.DTO;
 using TopicDomain.Application.Interfaces;
 using TopicDomain.Domain;
+using TopicDomain.Presentation.UseCases;
 
 namespace TopicDomain.Application.UseCases
 {
-    public class GetLast100TopicsCase(ITopicRepository _topicRepository, ILogger<FindTopicsByNameCase> _logger )
+    public class GetLast100TopicsCase(ITopicRepository _topicRepository, ILogger<GetLast100TopicsCase> _logger ) : IGetLast100TopicsCase
     {
         public async Task<Result<List<Topic>>> HandleAsync() 
         {

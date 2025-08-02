@@ -5,8 +5,9 @@ using TopicDomain.Application.Interfaces;
 using TopicDomain.Application.UnitOfWork;
 using TopicDomain.Domain;
 using TopicDomain.Infrastructure.Database.DBContext;
+using TopicDomain.Presentation.UseCases;
 
-namespace TopicDomain.Application.UseCases.CreateTopic
+namespace TopicDomain.Application.UseCases
 {
     public class CreateTopicCase(ICreateTopiсUnitOfWork _createTopiсUnit, ILogger<CreateTopicCase> logger) : ICreateTopicCase
     {
@@ -22,7 +23,7 @@ namespace TopicDomain.Application.UseCases.CreateTopic
                 await _createTopiсUnit.CreateTopicAsync(topic);
                 return Result.Success();
             }
-            catch (DbException ex)
+            catch (Exception ex)
             {
                 logger.LogError(ex.Message, "Db error when i created Topic");
                 return Result.Failure(ex.Message);

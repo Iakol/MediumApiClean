@@ -1,10 +1,11 @@
 ﻿using TopicDomain.Application.DTO;
 using TopicDomain.Application.Interfaces;
 using TopicDomain.Domain;
+using TopicDomain.Presentation.UseCases;
 
 namespace TopicDomain.Application.UseCases
 {
-    public class FindTopicsByNameCase(ITopicRepository _topicRepository, ILogger<FindTopicsByNameCase> _logger)
+    public class FindTopicsByNameCase(ITopicRepository _topicRepository, ILogger<FindTopicsByNameCase> _logger) : IFindTopicsByNameCase
     {
         public async Task<Result<List<Topic>>> HandleAsync(string name) 
         {

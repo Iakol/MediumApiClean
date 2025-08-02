@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TopicDomain.Application.DTO;
 using TopicDomain.Application.UseCases;
-using TopicDomain.Application.UseCases.CreateTopic;
 using TopicDomain.Domain;
+using TopicDomain.Presentation.UseCases;
 
 namespace TopicDomain.Controllers
 {
@@ -14,13 +14,13 @@ namespace TopicDomain.Controllers
     [ApiController]
     public class ApiController(
             ICreateTopicCase _createTopicCase,
-            FindTopicsByNameCase _findTopicsByNameCase,
-            FindTopicsDTOByNameCase _findTopicsDTOByNameCase,
-            GetLast100TopicsCase _getLast100TopicsCase,
-            GetTopicCase _getTopicCase,
-            GetTopicDTOByIdCase _getTopicDTOByIdCase,
-            GetTopicsByIdsCase _getTopicsByIdsCase,
-            GetTopicDTOByIdsCase _getTopicDTOByIdsCase
+            IFindTopicsByNameCase _findTopicsByNameCase,
+            IFindTopicsDTOByNameCase _findTopicsDTOByNameCase,
+            IGetLast100TopicsCase _getLast100TopicsCase,
+            IGetTopicCase _getTopicCase,
+            IGetTopicDTOByIdCase _getTopicDTOByIdCase,
+            IGetTopicsByIdsCase _getTopicsByIdsCase,
+            IGetTopicDTOByIdsCase _getTopicDTOByIdsCase
         ) : ControllerBase
     {
         [HttpPost("[action]")]
