@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopicDomain", "TopicDomain\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopicDomainTest", "TopicDomainTest\TopicDomainTest.csproj", "{BF8B9E79-AF7E-42AE-9545-AC7BA8856B1E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingListDomain", "ReadingListDomain\ReadingListDomain.csproj", "{62C96334-B88F-4BE1-9840-BAB4BED3688B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{BF8B9E79-AF7E-42AE-9545-AC7BA8856B1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF8B9E79-AF7E-42AE-9545-AC7BA8856B1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF8B9E79-AF7E-42AE-9545-AC7BA8856B1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62C96334-B88F-4BE1-9840-BAB4BED3688B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62C96334-B88F-4BE1-9840-BAB4BED3688B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62C96334-B88F-4BE1-9840-BAB4BED3688B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62C96334-B88F-4BE1-9840-BAB4BED3688B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,6 @@
+@ReadingListDomain_HostAddress = http://localhost:5261
+
+GET {{ReadingListDomain_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
