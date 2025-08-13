@@ -15,5 +15,8 @@ namespace ReadingListDomain.Application.Interfaces
         public Task UpdateNote(string Note,string storyInListId);
 
         public Task DeleteAllStoryByReadingList(string ReadingListId);
+
+        public Task<bool> isSaveStoryInReadingList(string ReadingListId,string storyId);
+
     }
 }

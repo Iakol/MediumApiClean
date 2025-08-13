@@ -4,7 +4,7 @@ using ReadingListDomain.Infrastructure.Database.DBContext;
 
 namespace ReadingListDomain.Infrastructure.Database.UnitsOfWork
 {
-    public class DeleteReadingListUnit(IReadingListRepository _readingListRepository, AppDBContext _db) : IDeleteReadingListUnit
+    public class DeleteReadingListUnit(IReadingListRepository _readingListRepository, AppDBContext _db, IStoryInReadingListRepository _storyInReadingListRepository) : IDeleteReadingListUnit
     {
         public async Task DeleteReadingList(string readlingListId)
         {
@@ -13,6 +13,7 @@ namespace ReadingListDomain.Infrastructure.Database.UnitsOfWork
                 throw new Exception("Reading List id is empty");
             }
             await _readingListRepository.DeleteAsync(readlingListId);
+            await _storyInReadingListRepository.DeleteAllStoryByReadingList(readlingListId);
             await _db.SaveChangesAsync();
         }
     }

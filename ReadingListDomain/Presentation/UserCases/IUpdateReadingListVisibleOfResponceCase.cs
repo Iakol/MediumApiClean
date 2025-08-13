@@ -4,7 +4,7 @@ namespace ReadingListDomain.Presentation.UserCases
 {
     public interface IUpdateReadingListVisibleOfResponceCase
     {
-        public Task<Result> Handle(bool isPrivate, string userId, string ReadingListId);
+        public Task<Result> Handle(bool isVisible, string userId, string ReadingListId);
 
     }
 }

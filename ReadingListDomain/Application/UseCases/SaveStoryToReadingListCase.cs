@@ -12,11 +12,14 @@ namespace ReadingListDomain.Application.UseCases
         private ILogger<SaveStoryToReadingListCase> _logger;
         private ICreateStoryInReadingListUnit _createStoryInReadingListUnit;
         private readonly IReadingListRepository _readingListRepository;
-        public SaveStoryToReadingListCase(ILogger<SaveStoryToReadingListCase> logger, ICreateStoryInReadingListUnit createStoryInReadingListUnit,IReadingListRepository readingListRepository)
+        private readonly IStoryInReadingListRepository _storyInReadingListRepository;
+
+        public SaveStoryToReadingListCase(ILogger<SaveStoryToReadingListCase> logger, ICreateStoryInReadingListUnit createStoryInReadingListUnit,IReadingListRepository readingListRepository, IStoryInReadingListRepository storyInReadingListRepository)
         {
             _logger = logger;
             _createStoryInReadingListUnit = createStoryInReadingListUnit;
             _readingListRepository = readingListRepository;
+            _storyInReadingListRepository = storyInReadingListRepository;
         }
 
         public async Task<Result> Handle(string storyId, string userId, string ReadingListId)
@@ -45,9 +48,18 @@ namespace ReadingListDomain.Application.UseCases
                 {
                     if (list.ReadingListCreator.Equals(userId))
                     {
-                        StoryInReadingList storyInList = new StoryInReadingList(storyId, ReadingListId);
-                        await _createStoryInReadingListUnit.CreateStoryInReadingList(storyInList);
-                        return Result.Success();
+                        if (!await _storyInReadingListRepository.isSaveStoryInReadingList(ReadingListId, storyId))
+                        {
+                            StoryInReadingList storyInList = new StoryInReadingList(storyId, ReadingListId);
+                            await _createStoryInReadingListUnit.CreateStoryInReadingList(storyInList);
+                            return Result.Success();
+                        }
+                        else 
+                        {
+                            _logger.LogError("The story already saved in readinglist", "Error whe create Save story in List");
+                            return Result.Failure("The story already saved in readinglist");
+                        }
+                        
                     }
                     else
                     {

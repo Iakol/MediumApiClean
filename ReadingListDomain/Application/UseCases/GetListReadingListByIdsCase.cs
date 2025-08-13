@@ -18,10 +18,10 @@ namespace ReadingListDomain.Application.UseCases
 
         public async Task<Result<List<ReadingList>>> Handle(List<string> Ids)
         {
-            if (!Ids.Any(i => string.IsNullOrWhiteSpace(i))) 
+            if (Ids.Any(i => string.IsNullOrWhiteSpace(i))) 
             {
                 _logger.LogError("One or more id is empty", "Error whe get Reading list by List of Ids");
-                return Result<List<ReadingList>>.Failure("One or more id is empty is empty");
+                return Result<List<ReadingList>>.Failure("One or more id is empty");
             }
 
 

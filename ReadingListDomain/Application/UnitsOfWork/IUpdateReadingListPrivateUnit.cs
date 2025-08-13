@@ -2,6 +2,6 @@
 {
     public interface IUpdateReadingListPrivateUnit
     {
-        public Task SetPrivate(bool isPrivate);
+        public Task SetPrivate(bool isPrivate,string ReadingListId);
     }
 }

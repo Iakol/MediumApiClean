@@ -43,11 +43,11 @@ namespace ReadingListDomain.Application.UseCases
 
                 ReadingList readingList = await _readingListRepository.GetEntityAsync(ReadingListId);
 
-                if (readingList == null)
+                if (readingList != null)
                 {
                     if (readingList.ReadingListCreator.Equals(userId))
                     {
-                        await _deleteStoryInReadingList.DeleteSaveStoryInReadingList(ReadingListId);
+                        await _deleteStoryInReadingList.DeleteSaveStoryInReadingList(SaveStoryId);
                         return Result.Success();
                     }
                     else

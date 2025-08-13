@@ -18,7 +18,7 @@ namespace ReadingListDomain.Infrastructure.Database.Repositories
         public async Task DeleteAllStoryByReadingList(string ReadingListId)
         {
             List < StoryInReadingListModel > stories = await Models.Where(s => s.ReadingListId.Equals(ReadingListId)).ToListAsync();
-            Models.Delet
+            Models.RemoveRange(stories);
         
         }
 
@@ -27,6 +27,11 @@ namespace ReadingListDomain.Infrastructure.Database.Repositories
             List<StoryInReadingListModel> list = await Models.Where(s => s.ReadingListId.Equals(ReadingListId)).ToListAsync();
 
             return _mapper.Map<List<StoryInReadingList>>(list);
+        }
+
+        public async Task<bool> isSaveStoryInReadingList(string ReadingListId, string storyId)
+        {
+            return await Models.Where(s => s.ReadingListId.Equals(ReadingListId)).AnyAsync(s => s.StoryId.Equals(storyId));
         }
 
         public async Task UpdateNote(string Note, string storyInListId)

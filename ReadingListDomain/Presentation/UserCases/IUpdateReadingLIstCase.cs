@@ -2,9 +2,9 @@
 
 namespace ReadingListDomain.Presentation.UserCases
 {
-    public interface IUpdateReadingLIstCase
+    public interface IUpdateReadingListCase
     {
-        public Task<Result> Handle(CreatePropsReadingListDTO newReadingList);
+        public Task<Result> Handle(CreatePropsReadingListDTO newReadingList, string userId);
 
     }
 }

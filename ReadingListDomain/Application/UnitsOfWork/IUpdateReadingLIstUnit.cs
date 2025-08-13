@@ -1,9 +1,10 @@
 ﻿using ReadingListDomain.Application.DTO;
+using ReadingListDomain.Domain;
 
 namespace ReadingListDomain.Application.UnitsOfWork
 {
-    public interface IUpdateReadingLIstUnit
+    public interface IUpdateReadingListUnit
     {
-        public Task UpdateReadingList(CreatePropsReadingListDTO readingList);
+        public Task UpdateReadingList(ReadingList readingList);
     }
 }

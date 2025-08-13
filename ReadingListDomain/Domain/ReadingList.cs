@@ -5,7 +5,9 @@ namespace ReadingListDomain.Domain
     public class ReadingList
     {
 
-        public ReadingList(string ReadingListCreator,string Name,string Description, bool Immortal = false , bool IsPrivate, bool IsOpenResponses) 
+        public ReadingList() { }
+
+        public ReadingList(string ReadingListCreator,string Name,string Description, bool IsPrivate, bool IsOpenResponses, bool Immortal = false)
         {
             ReadingListCreator = ReadingListCreator;
             Name = Name;

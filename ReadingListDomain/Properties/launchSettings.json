@@ -1,12 +1,12 @@
 {
   "profiles": {
-    "http": {
+    "https-TestUser": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "DevelopmentTestUser"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5261"
+      "applicationUrl": "https://localhost:7111;http://localhost:5261"
     },
     "https": {
       "commandName": "Project",

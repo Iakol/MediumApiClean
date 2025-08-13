@@ -2,7 +2,7 @@
 {
     public class StoryInReadingList
     {
-
+        public StoryInReadingList() { }
         public StoryInReadingList(string storyId, string readingListId)
         {
             StoryId = storyId;

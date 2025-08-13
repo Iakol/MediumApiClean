@@ -17,6 +17,7 @@ namespace ReadingListDomain.Infrastructure.Database.UnitOfWorks
                 throw new Exception("Save story is not exist");
             }
             await _storyInReadingListRepository.UpdateNote(NewNote, SaveStoryId);
+            await _db.SaveChangesAsync();   
         }
     }
 }
