@@ -5,6 +5,6 @@ namespace TopicDomain.Presentation.UseCases
 {
     public interface IGetTopicDTOCase
     {
-        public Task<Result<Topic>> HandleAsync(string id);
+        public Task<Result<TopicDTO>> HandleAsync(string id);
     }
 }

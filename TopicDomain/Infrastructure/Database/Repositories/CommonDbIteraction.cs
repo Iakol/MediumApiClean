@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using TopicDomain.Application.Interfaces;
 using TopicDomain.Infrastructure.Database.DBContext;
@@ -7,7 +7,7 @@ using TopicDomain.Infrastructure.Database.DBContext;
 
 namespace TopicDomain.Infrastructure.Database.Repositories
 {
-    public class CommonDbIteraction<Model, Domain> : IGenericDBRepository<Model, Domain> where Model : class where Domain : class
+    public class CommonDbIteraction<Model, Domain> : IGenericDBRepository<Model, Domain> where Model : class, IDomainEntity where Domain : class, IDomainEntity 
     {
         protected readonly IMapper _mapper;
         protected readonly AppDBContext _db;
@@ -56,14 +56,14 @@ namespace TopicDomain.Infrastructure.Database.Repositories
 
         public async Task<Domain?> GetEntityAsync(string id)
         {
-            Model getModel =   _db.Set<Model>().FirstOrDefault(WhereIdEqualsPrimaryKeyExpression(id));     
+            Model getModel = await  _db.Set<Model>().FirstOrDefaultAsync(m => m.Id.Equals(id));     
             return _mapper.Map<Domain>(getModel);         
         }
 
         public async Task UpdateAsync(Domain entity)
         {
-            var Model = _mapper.Map<Model>(entity);
-            _db.Set<Model>().Update(Model);
+            
+            _mapper.Map(entity,await _db.Set<Model>().FindAsync(entity.Id));
         }
 
 

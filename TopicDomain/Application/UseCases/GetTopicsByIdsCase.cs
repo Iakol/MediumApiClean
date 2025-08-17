@@ -6,7 +6,7 @@ using TopicDomain.Presentation.UseCases;
 
 namespace TopicDomain.Application.UseCases
 {
-    public class GetTopicsByIdsCase(ITopicRepository _topicRepository, ILogger<FindTopicsByNameCase> _logger) : IGetTopicsByIdsCase
+    public class GetTopicsByIdsCase(ITopicRepository _topicRepository, ILogger<GetTopicsByIdsCase> _logger) : IGetTopicsByIdsCase
     {
 
         public async Task<Result<List<Topic>>> HandleAsync(List<string> ids) 

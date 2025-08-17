@@ -1,8 +1,9 @@
 ﻿using TopicDomain.Enum;
+using TopicDomain.Infrastructure.Database.Repositories;
 
 namespace TopicDomain.Domain
 {
-    public class Topic
+    public class Topic : IDomainEntity
     {
         public string Id { get; set; }
         public string Name { get; set; }

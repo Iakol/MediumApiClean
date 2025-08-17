@@ -1,9 +1,10 @@
 ﻿using TopicDomain.Domain;
 using TopicDomain.Enum;
+using TopicDomain.Infrastructure.Database.Repositories;
 
 namespace TopicDomain.Infrastructure.Database.Models
 {
-    public class TopicModel
+    public class TopicModel : IDomainEntity
     {
         public string Id { get; set; }
         public string Name { get; set; }
