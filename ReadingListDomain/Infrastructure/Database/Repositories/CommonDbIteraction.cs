@@ -2,13 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using ReadingListDomain.Application.Interfaces;
 using ReadingListDomain.Infrastructure.Database.DBContext;
+using ReadingListDomain.Infrastructure.Database.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace ReadingListDomain.Infrastructure.Database.Repositories
 {
-    public class CommonDbIteraction<Model, Domain> : IGenericDBRepository<Model, Domain> where Model : class where Domain : class
+    public class CommonDbIteraction<Model, Domain> : IGenericDBRepository<Model, Domain> where Model : class, IModelEntity where Domain : class, IModelEntity
     {
         protected readonly IMapper _mapper;
         protected readonly AppDBContext _db;
@@ -64,8 +65,7 @@ namespace ReadingListDomain.Infrastructure.Database.Repositories
 
         public async Task UpdateAsync(Domain entity)
         {
-            Model model =_mapper.Map<Model>(entity);
-            Models.Update(model);
+            Model model = _mapper.Map(entity,Models.Find(entity.Id));
 
         }
     }

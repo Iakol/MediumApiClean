@@ -9,13 +9,13 @@ namespace ReadingListDomain.Application.UseCases
     public class UpdateReadingListVisibleOfResponceCase : IUpdateReadingListVisibleOfResponceCase
     {
         private ILogger<UpdateReadingListVisibleOfResponceCase> _logger;
-        private IUpdateReadingListVisibleOfResponceUnit _updateReadingListVisibleOfResponceUnit;
+        private IUpdateReadingListUnit _updateReadingListUnit;
         private readonly IReadingListRepository _readingListRepository;
 
-        public UpdateReadingListVisibleOfResponceCase(ILogger<UpdateReadingListVisibleOfResponceCase> logger, IUpdateReadingListVisibleOfResponceUnit updateReadingListVisibleOfResponceUnit, IReadingListRepository readingListRepository)
+        public UpdateReadingListVisibleOfResponceCase(ILogger<UpdateReadingListVisibleOfResponceCase> logger, IUpdateReadingListUnit updateReadingListUnit, IReadingListRepository readingListRepository)
         {
             _logger = logger;
-            _updateReadingListVisibleOfResponceUnit = updateReadingListVisibleOfResponceUnit;
+            _updateReadingListUnit = updateReadingListUnit;
             _readingListRepository = readingListRepository;
         }
 
@@ -40,7 +40,8 @@ namespace ReadingListDomain.Application.UseCases
                 {
                     if (readinglist.ReadingListCreator.Equals(userId))
                     {
-                        _updateReadingListVisibleOfResponceUnit.SetVisibleOfResponce(isVisible, ReadingListId);
+                        readinglist.IsOpenResponces = isVisible;
+                        await _updateReadingListUnit.UpdateReadingList(readinglist);
                         return Result.Success();
                     }
                     else

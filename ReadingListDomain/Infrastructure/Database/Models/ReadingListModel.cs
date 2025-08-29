@@ -2,7 +2,7 @@
 
 namespace ReadingListDomain.Infrastructure.Database.Models
 {
-    public class ReadingListModel
+    public class ReadingListModel : IModelEntity
     {
         public string Id { get; set; }
         public string ReadingListCreator { get; set; }

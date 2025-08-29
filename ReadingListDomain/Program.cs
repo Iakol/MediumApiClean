@@ -30,6 +30,8 @@ if (envName.Equals("Development") || envName.Equals("DevelopmentTestUser"))
     builder.Services.AddSwaggerGen();
 }
 
+builder.Services.Configure<RabbitLogCreds>(builder.Configuration.GetSection("RabbitCred"));
+
 //Repositories
 builder.Services.AddScoped<IReadingListRepository, ReadingListRepository>();
 builder.Services.AddScoped<IStoryInReadingListRepository, StoryInReadingListRepository>();
@@ -40,10 +42,8 @@ builder.Services.AddScoped<ICreateReadingListUnit, CreateReadingListUnit>();
 builder.Services.AddScoped<ICreateStoryInReadingListUnit, CreateStoryInReadingListUnit>();
 builder.Services.AddScoped<IDeleteReadingListUnit, DeleteReadingListUnit>();
 builder.Services.AddScoped<IDeleteStoryInReadingListUnit, DeleteStoryInReadingListUnit>();
-builder.Services.AddScoped<IUpdateNoteForStoryInReadingListUnit, UpdateNoteForStoryInReadingListUnit>();
-builder.Services.AddScoped<IUpdateReadingListPrivateUnit, UpdateReadingListPrivateUnit>();
+builder.Services.AddScoped<IUpdateStoryInReadingListUnit, UpdateStoryInReadingListUnit>();
 builder.Services.AddScoped<IUpdateReadingListUnit, UpdateReadingListUnit>();
-builder.Services.AddScoped<IUpdateReadingListVisibleOfResponceUnit, UpdateReadingListVisibleOfResponceUnit>();
 
 
 //Use cases
@@ -60,7 +60,7 @@ builder.Services.AddScoped<IUpdateReadingListCase, UpdateReadingListCase>();
 builder.Services.AddScoped<IUpdateReadingListPrivateCase, UpdateReadingListPrivateCase>();
 builder.Services.AddScoped<IUpdateReadingListVisibleOfResponceCase, UpdateReadingListVisibleOfResponceCase>();
 
-
+builder.Services.AddHostedService<CreateConstantReadingListConsumer>();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

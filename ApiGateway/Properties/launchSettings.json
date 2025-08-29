@@ -5,7 +5,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "TopicDomainURL": "localhost:7069",
-        "UserRealetionShipDomainURL": "localhost:7295"
+        "UserRealetionShipDomainURL": "localhost:7295",
+        "ReadingListDomainURL": "localhost:7111"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7067;http://localhost:5097"
@@ -15,7 +16,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "DevelopmentTestUser",
         "TopicDomainURL": "localhost:7069",
-        "UserRealetionShipDomainURL": "localhost:7295"
+        "UserRealetionShipDomainURL": "localhost:7295",
+        "ReadingListDomainURL": "localhost:7111"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7067;http://localhost:5097"

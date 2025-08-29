@@ -1,6 +1,8 @@
 ﻿using ReadingListDomain.Application.DTO;
+using ReadingListDomain.Application.Interfaces;
 using ReadingListDomain.Application.UnitsOfWork;
 using ReadingListDomain.Domain;
+using ReadingListDomain.Infrastructure.Database.Repositories;
 using ReadingListDomain.Presentation.UserCases;
 
 namespace ReadingListDomain.Application.UseCases
@@ -9,11 +11,14 @@ namespace ReadingListDomain.Application.UseCases
     {
         private readonly ILogger<CreateConstantReadingListToUserCase> _logger;
         private readonly ICreateReadingListUnit _createReadingListUnit;
+        private readonly IReadingListRepository _readingListRepository;
 
-        public CreateConstantReadingListToUserCase(ILogger<CreateConstantReadingListToUserCase> logger, ICreateReadingListUnit createReadingListUnit) 
+        public CreateConstantReadingListToUserCase(ILogger<CreateConstantReadingListToUserCase> logger, ICreateReadingListUnit createReadingListUnit, IReadingListRepository readingListRepository) 
         {
             _logger = logger;
             _createReadingListUnit = createReadingListUnit;
+            _readingListRepository = readingListRepository;
+
         }
 
         public async Task<Result> Handle(string userId)
@@ -26,6 +31,12 @@ namespace ReadingListDomain.Application.UseCases
 
             try
             {
+                bool isAlreadyCreated = (await _readingListRepository.GetListOfReadingList(userId)).Any(r => r.Immortal);
+                if (isAlreadyCreated) 
+                {
+                    _logger.LogError("ReadingList is already created", "Error When Create ReadingList");
+                    return Result.Failure("ReadingList is already created");
+                }
                 ReadingList newList = new ReadingList(userId);
 
                 await _createReadingListUnit.CreateReadingList(newList);
@@ -36,8 +47,6 @@ namespace ReadingListDomain.Application.UseCases
                 _logger.LogError(ex.Message, "Error When Create ReadingList");
                 return Result.Failure(ex.Message);
             }
-            throw new NotImplementedException();
-
 
         }
     }

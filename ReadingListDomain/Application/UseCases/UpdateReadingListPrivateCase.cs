@@ -9,13 +9,13 @@ namespace ReadingListDomain.Application.UseCases
     public class UpdateReadingListPrivateCase : IUpdateReadingListPrivateCase
     {
         private ILogger<UpdateReadingListPrivateCase> _logger;
-        private IUpdateReadingListPrivateUnit _updateReadingListPrivateUnit;
+        private IUpdateReadingListUnit _updateReadingListUnit;
         private readonly IReadingListRepository _readingListRepository;
 
-        public UpdateReadingListPrivateCase(ILogger<UpdateReadingListPrivateCase> logger, IUpdateReadingListPrivateUnit updateReadingListPrivateUnit, IReadingListRepository readingListRepository)
+        public UpdateReadingListPrivateCase(ILogger<UpdateReadingListPrivateCase> logger, IUpdateReadingListUnit updateReadingListUnit, IReadingListRepository readingListRepository)
         {
             _logger = logger;
-            _updateReadingListPrivateUnit = updateReadingListPrivateUnit;
+            _updateReadingListUnit = updateReadingListUnit;
             _readingListRepository = readingListRepository;
         }
 
@@ -38,7 +38,8 @@ namespace ReadingListDomain.Application.UseCases
                 {
                     if (readinglist.ReadingListCreator.Equals(userId))
                     {
-                        await _updateReadingListPrivateUnit.SetPrivate(isPrivate, ReadingListId);
+                        readinglist.IsPrivate = isPrivate;
+                        await _updateReadingListUnit.UpdateReadingList(readinglist);
                         return Result.Success();
                     }
                     else

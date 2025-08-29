@@ -8,10 +8,7 @@ namespace ReadingListDomain.Infrastructure.Database.UnitsOfWork
     {
         public async Task DeleteReadingList(string readlingListId)
         {
-            if (string.IsNullOrWhiteSpace(readlingListId)) 
-            {
-                throw new Exception("Reading List id is empty");
-            }
+
             await _readingListRepository.DeleteAsync(readlingListId);
             await _storyInReadingListRepository.DeleteAllStoryByReadingList(readlingListId);
             await _db.SaveChangesAsync();

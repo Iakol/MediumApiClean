@@ -2,7 +2,7 @@
 
 namespace ReadingListDomain.Infrastructure.Database.Models
 {
-    public class StoryInReadingListModel
+    public class StoryInReadingListModel : IModelEntity
     {
         public string Id { get; set; }
         public string StoryId { get; set; }

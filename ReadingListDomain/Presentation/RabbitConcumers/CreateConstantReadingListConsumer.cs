@@ -2,8 +2,12 @@
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using ReadingListDomain.Application.DTO;
 using ReadingListDomain.Presentation.UserCases;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
+using System.Threading.Channels;
 
 namespace ReadingListDomain.Presentation.RabbitConcumers
 {
@@ -13,8 +17,13 @@ namespace ReadingListDomain.Presentation.RabbitConcumers
         private readonly IConnectionFactory _connectionFactory;
         private IConnection _connection;
         private IChannel _channel;
-        private readonly string CreateConstantReadingListQueue = "CreateConstantReadingListForUserQueue";
+        private const string CreateConstantReadingListQueue = "CreateConstantReadingListForUserQueue";
         private readonly ICreateConstantReadingListToUserCase _createConstantReadingListToUserCase;
+        private readonly IDeleteConstantReadingListToUserCase _deleteConstantReadingListToUserCase;
+
+        private const string DeleteConstantReadingListQueue = "DeleteConstantReadingListForUserQueue";
+        
+
 
         public CreateConstantReadingListConsumer(IOptions<RabbitLogCreds> options, ICreateConstantReadingListToUserCase createConstantReadingListToUserCase) 
         {
@@ -24,6 +33,7 @@ namespace ReadingListDomain.Presentation.RabbitConcumers
                 HostName = _RabbitOpt.Value.HostName,
                 UserName = _RabbitOpt.Value.UserName,
                 Password = _RabbitOpt.Value.Password,
+                Port = _RabbitOpt.Value.Port,
             };
 
             _createConstantReadingListToUserCase = createConstantReadingListToUserCase;
@@ -33,14 +43,28 @@ namespace ReadingListDomain.Presentation.RabbitConcumers
         {
             _connection =  _connectionFactory.CreateConnectionAsync().Result;
             _channel = _connection.CreateChannelAsync().Result;
+            _channel.QueueDeclareAsync(DeleteConstantReadingListQueue, true, false, false).Wait();
 
-             _channel.QueueDeclareAsync(
+            _channel.QueueDeclareAsync(
                 queue: CreateConstantReadingListQueue,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null
-                );
+                ).Wait();
+
+            _channel.BasicReturnAsync += (sender, args) =>
+            {
+                if (args.BasicProperties.ReplyTo.StartsWith("ResultCreateConstantReadingListForUserQueue"))
+                {
+
+                    args.BasicProperties.Headers.TryGetValue("userId", out object Value);
+                    string userId = (string)Value!;
+                    _deleteConstantReadingListToUserCase.Handle(userId).Wait();
+                }
+                return Task.CompletedTask;
+            };
+
             return base.StartAsync(stoppingToken);
         }
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -49,11 +73,28 @@ namespace ReadingListDomain.Presentation.RabbitConcumers
 
             consumer.ReceivedAsync += async (ch, ea) =>
             {
-                string UserId = ea.Body.ToString();
-                _createConstantReadingListToUserCase.Handle(UserId);
+                string UserId = Encoding.UTF8.GetString(ea.Body.Span);
+                await _channel.BasicAckAsync(ea.DeliveryTag, false);
 
-                await _channel.BasicAckAsync(ea.DeliveryTag,false);
+                Result result = await _createConstantReadingListToUserCase.Handle(UserId);
+                CreateUserSageResult RabbitResult;
+                if (result.IsSuccess)
+                {
+                    RabbitResult = CreateUserSageResult.Success(0);
+                }
+                else 
+                {
+                    RabbitResult = CreateUserSageResult.Failure(result.Error, 2);
 
+                }
+
+                string RabitResultJson = JsonSerializer.Serialize(RabbitResult);
+                var RabitResultMessage = Encoding.UTF8.GetBytes(RabitResultJson);
+                var prop = new BasicProperties()
+                {
+                    Headers = new Dictionary<string, object>() { { "userId", (object)UserId } }
+                };
+                await _channel.BasicPublishAsync(exchange: string.Empty, routingKey: ea.BasicProperties.ReplyTo, mandatory: true,basicProperties: prop, body: RabitResultMessage);
             };
 
             _channel.BasicConsumeAsync(

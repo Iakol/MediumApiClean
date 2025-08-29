@@ -11,8 +11,10 @@ namespace ReadingListDomain.Application.Interfaces
 
         public Task<List<ReadingList>> GetListOfReadingList(List<string> Ids);
         public Task<List<ReadingList>> GetListOfReadingList(string UserId);
-        public Task UpdateReadingListPrivate(bool isPrivate,string readingListID);
+        public Task UpdateReadingListPrivate(bool isPrivate, string readingListID);
         public Task UpdateReadingLisOpenResponces(bool isOpenResponces, string readingListID);
+
+        public Task<ReadingList>? GetConstantListByUserIdIfExist(string id);
 
 
     }

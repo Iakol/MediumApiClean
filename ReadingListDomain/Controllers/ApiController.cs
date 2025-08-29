@@ -93,13 +93,12 @@ namespace ReadingListDomain.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetListReadingListByCreatorId()
+        public async Task<IActionResult> GetListReadingListByCreatorId(string? UserId)
         {
-            string userId = User.FindFirst("sub")?.Value;
 
-            if (!string.IsNullOrEmpty(userId))
+            if (!string.IsNullOrEmpty(UserId))
             {
-                var result = await _getListReadingListByCreatorIdCase.Handle(userId);
+                var result = await _getListReadingListByCreatorIdCase.Handle(UserId);
 
                 if (result.IsSuccess)
                 {
@@ -120,14 +119,42 @@ namespace ReadingListDomain.Controllers
             }
             else
             {
-                return BadRequest(new ProblemDetails
-                {
-                    Title = "Get Reading Lists By CreatorId Fail",
-                    Type = "https://developer.mozilla.org/ru/docs/Web/HTTP/Reference/Status/400",
-                    Detail = "User is Not authorizate",
-                    Status = 400,
+                string userId = User.FindFirst("sub")?.Value;
 
-                });
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    var result = await _getListReadingListByCreatorIdCase.Handle(userId);
+
+                    if (result.IsSuccess)
+                    {
+                        return Ok(result.Data);
+                    }
+                    else
+                    {
+                        return BadRequest(new ProblemDetails
+                        {
+                            Title = "Get Reading Lists By CreatorId Fail",
+                            Type = "https://developer.mozilla.org/ru/docs/Web/HTTP/Reference/Status/400",
+                            Detail = result.Error,
+                            Status = 400,
+
+                        });
+                    }
+
+                }
+                else
+                {
+                    return BadRequest(new ProblemDetails
+                    {
+                        Title = "Get Reading Lists By CreatorId Fail",
+                        Type = "https://developer.mozilla.org/ru/docs/Web/HTTP/Reference/Status/400",
+                        Detail = "User is Not authorizate",
+                        Status = 400,
+
+                    });
+                }
+
+                
             }
 
         }

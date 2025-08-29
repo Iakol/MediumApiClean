@@ -10,11 +10,6 @@ namespace ReadingListDomain.Infrastructure.Database.UnitOfWorks
     {
         public async Task DeleteSaveStoryInReadingList(string SaveStory)
         {
-            StoryInReadingList story = await _storyInReadingListRepository.GetEntityAsync(SaveStory);
-            if (story == null)
-            { 
-                throw new Exception("The save story is not exist");
-            }
 
             await _storyInReadingListRepository.DeleteAsync(SaveStory);
             await _db.SaveChangesAsync();

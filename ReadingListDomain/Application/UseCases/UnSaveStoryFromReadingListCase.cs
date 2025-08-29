@@ -13,6 +13,7 @@ namespace ReadingListDomain.Application.UseCases
         private ILogger<UnSaveStoryFromReadingListCase> _logger;
         private IDeleteStoryInReadingListUnit _deleteStoryInReadingList;
         private readonly IReadingListRepository _readingListRepository;
+        IStoryInReadingListRepository _storyInReadingListRepository;
 
         public UnSaveStoryFromReadingListCase(ILogger<UnSaveStoryFromReadingListCase> logger, IDeleteStoryInReadingListUnit deleteStoryInReadingList, IReadingListRepository readingListRepository)
         {
@@ -47,6 +48,14 @@ namespace ReadingListDomain.Application.UseCases
                 {
                     if (readingList.ReadingListCreator.Equals(userId))
                     {
+                        StoryInReadingList SavedStory = await _storyInReadingListRepository.GetEntityAsync(SaveStoryId);
+
+                        if (SavedStory == null) 
+                        {
+                            _logger.LogError("Save story not exist", "Error when unSave story in List");
+                            return Result.Failure("Save story not exist");
+                        }
+
                         await _deleteStoryInReadingList.DeleteSaveStoryInReadingList(SaveStoryId);
                         return Result.Success();
                     }

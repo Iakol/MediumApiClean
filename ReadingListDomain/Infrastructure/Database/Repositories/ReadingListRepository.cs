@@ -14,6 +14,16 @@ namespace ReadingListDomain.Infrastructure.Database.Repositories
         {
         }
 
+        public async Task<ReadingList>? GetConstantListByUserIdIfExist(string id)
+        {
+            ReadingListModel list = await Models.FirstOrDefaultAsync(r => r.ReadingListCreator.Equals(id) && r.Immortal);
+            if (list == null) 
+            {
+                return null;
+            }
+            return _mapper.Map<ReadingList>(list);
+        }
+
         public async Task<List<ReadingList>> GetListOfReadingList(List<string> Ids)
         {
             List<ReadingListModel> list = await Models.Where(r => Ids.Contains(r.Id)).ToListAsync();

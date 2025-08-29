@@ -1,8 +1,9 @@
 ﻿using ReadingListDomain.Application.DTO;
+using ReadingListDomain.Infrastructure.Database.Models;
 
 namespace ReadingListDomain.Domain
 {
-    public class ReadingList
+    public class ReadingList : IModelEntity
     {
 
         public ReadingList() { }

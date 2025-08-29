@@ -10,14 +10,17 @@ namespace ReadingListDomain.Application.UseCases
     public class UpdateNoteToSaveStoryInReadingListCase : IUpdateNoteToSaveStoryInReadingListCase
     {
         private ILogger<UpdateNoteToSaveStoryInReadingListCase> _logger;
-        private IUpdateNoteForStoryInReadingListUnit _updateNoteForStoryInReadingList;
+        private IUpdateStoryInReadingListUnit _updateStoryInReadingList;
+        private IStoryInReadingListRepository _storyInReadingListRepository;
+
         private readonly IReadingListRepository _readingListRepository;
 
-        public UpdateNoteToSaveStoryInReadingListCase(ILogger<UpdateNoteToSaveStoryInReadingListCase> logger, IUpdateNoteForStoryInReadingListUnit updateNoteForStoryInReadingList, IReadingListRepository readingListRepository)
+        public UpdateNoteToSaveStoryInReadingListCase(ILogger<UpdateNoteToSaveStoryInReadingListCase> logger, IUpdateStoryInReadingListUnit updateStoryInReadingList, IReadingListRepository readingListRepository, IStoryInReadingListRepository storyInReadingListRepository)
         {
             _logger = logger;
-            _updateNoteForStoryInReadingList = updateNoteForStoryInReadingList;
+            _updateStoryInReadingList = updateStoryInReadingList;
             _readingListRepository = readingListRepository;
+            _storyInReadingListRepository = storyInReadingListRepository;
         }
         public async Task<Result> Handle(string SaveStoryId, string userId, string ReadingListId, string Note)
         {
@@ -45,8 +48,20 @@ namespace ReadingListDomain.Application.UseCases
                 {
                     if (readingList.ReadingListCreator.Equals(userId))
                     {
-                        await _updateNoteForStoryInReadingList.UpdateNote(SaveStoryId, Note);
-                        return Result.Success();
+                        StoryInReadingList story = await _storyInReadingListRepository.GetEntityAsync(SaveStoryId);
+                        if (story != null) 
+                        {
+                            story.Note = Note;
+                             
+                            await _updateStoryInReadingList.UpdateSavedStory(story);
+                            return Result.Success();
+                        }
+                        else
+                        {
+                            _logger.LogError("Saved story not exist", "Error when update note story in List");
+                            return Result.Failure("Saved story not exist");
+                        }
+
                     }
                     else
                     {

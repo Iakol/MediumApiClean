@@ -1,6 +1,8 @@
-﻿namespace ReadingListDomain.Domain
+﻿using ReadingListDomain.Infrastructure.Database.Models;
+
+namespace ReadingListDomain.Domain
 {
-    public class StoryInReadingList
+    public class StoryInReadingList : IModelEntity
     {
         public StoryInReadingList() { }
         public StoryInReadingList(string storyId, string readingListId)

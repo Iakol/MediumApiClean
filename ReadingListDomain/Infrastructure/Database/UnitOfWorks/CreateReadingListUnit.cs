@@ -9,10 +9,6 @@ namespace ReadingListDomain.Infrastructure.Database.UnitOfWorks
     {
         public async Task CreateReadingList(ReadingList readingListToCreate)
         {
-            if (readingListToCreate == null) 
-            {
-                throw new Exception("Reading List is Null");
-            }
             await _readingListRepository.AddAsync(readingListToCreate);
             await _db.SaveChangesAsync();
         }
