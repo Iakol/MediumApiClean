@@ -13,9 +13,6 @@ namespace ReadingListDomain.Infrastructure.Database.UnitOfWorks
 
             await _storyInReadingListRepository.DeleteAsync(SaveStory);
             await _db.SaveChangesAsync();
-
-
-
         }
     }
 }

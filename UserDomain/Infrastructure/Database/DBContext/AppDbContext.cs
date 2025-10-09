@@ -1,11 +1,12 @@
 ﻿
 using MediumDataBaseManagerAzureApi.Data.FluentApi.User_Fluent;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UserDomain.Infrastructure.Database.Models;
 
 namespace UserDomain.Infrastructure.Database.DBContext
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<UserModel>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
        : base(options)

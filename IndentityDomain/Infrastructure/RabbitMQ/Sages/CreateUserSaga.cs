@@ -1,6 +1,7 @@
 ﻿using IndentityDomain.Application.DTO;
 using IndentityDomain.Infrastructure.RabbitMQ.RabbitInitiate;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using ReadingListDomain.Application.DTO;
 using System.Reflection.Metadata;
 using System.Text;
@@ -22,66 +23,104 @@ namespace IndentityDomain.Infrastructure.RabbitMQ.Sages
 
         private IChannel _channel;
 
+        static bool isDeclareQueues = false;
+
         public CreateUserSaga(RabbitFactory rabbitFactory, RabbitTaskDictonary rabbitTaskDictonary)
         {
             _rabbitFactory = rabbitFactory;
             _rabbitTaskDictonary = rabbitTaskDictonary;
             _channel = _rabbitFactory.GetConnectionChanel();
-            var CreateRadinglistQueueArgs = new Dictionary<string, object>() 
-            {
-            
-            }
 
-            _channel.QueueDeclareAsync(ResultCreateConstantReadingListForUserQueue, false, true, true).Wait();
-            _channel.QueueDeclareAsync(ResultCreateUserConstantDataQueue, false, true, true).Wait();
-            _channel.QueueDeclareAsync(CreateConstantReadingListQueue, true, false, false).Wait();
-            _channel.QueueDeclareAsync(CreateUserConstantDataQueue, true, false, false).Wait();
-            _channel.QueueDeclareAsync(DeleteConstantReadingListQueue, true, false, false).Wait();
-            _channel.QueueDeclareAsync(DeleteUserConstantDataQueue, true, false, false).Wait();
+            if (!isDeclareQueues) { 
+                _channel.QueueDeclareAsync(ResultCreateConstantReadingListForUserQueue, false, true, true).Wait();
+                _channel.QueueDeclareAsync(ResultCreateUserConstantDataQueue, false, true, true).Wait();
+                _channel.QueueDeclareAsync(CreateConstantReadingListQueue, true, false, false, _rabbitFactory.CreateDeadLeaterArgumentsForQueue(ResultCreateConstantReadingListForUserQueue, 20000)).Wait();
+                _channel.QueueDeclareAsync(CreateUserConstantDataQueue, true, false, false, _rabbitFactory.CreateDeadLeaterArgumentsForQueue(ResultCreateUserConstantDataQueue, 20000)).Wait();
+                _channel.QueueDeclareAsync(DeleteConstantReadingListQueue, true, false, false).Wait();
+                _channel.QueueDeclareAsync(DeleteUserConstantDataQueue, true, false, false).Wait();
 
-
-            _channel.BasicReturnAsync += (sender, args) =>
-            {
-                string routingKey = args.RoutingKey;
-                if (
-                    routingKey.Equals(CreateConstantReadingListQueue) ||
-                    routingKey.Equals(CreateUserConstantDataQueue) ||
-                    routingKey.Equals(DeleteConstantReadingListQueue) ||
-                    routingKey.Equals(DeleteUserConstantDataQueue)
-                )
+                _channel.BasicReturnAsync += (sender, args) =>
                 {
-                    string reason = args.ReplyText;
-
-                    if (reason.Equals("NO_ROUTE"))
-                    {
-                        string? correlationId = args.BasicProperties?.CorrelationId;
-                        _channel.QueueDeclareAsync(routingKey, true, false, false).Wait();
-
-                        if (
+                    string routingKey = args.RoutingKey;
+                    if (
+                        routingKey.Equals(CreateConstantReadingListQueue) ||
+                        routingKey.Equals(CreateUserConstantDataQueue) ||
                         routingKey.Equals(DeleteConstantReadingListQueue) ||
                         routingKey.Equals(DeleteUserConstantDataQueue)
-                        )
-                        {
-                            _channel.BasicPublishAsync(exchange: string.Empty, routingKey: routingKey, mandatory: true, body: args.Body);
-                            return Task.CompletedTask;
-                        }
+                    )
+                    {
+                        string reason = args.ReplyText;
 
-
-                        if (_rabbitTaskDictonary.CheakTaskLive(correlationId)) 
+                        if (reason.Equals("NO_ROUTE"))
                         {
-                            var prop = new BasicProperties()
+                            string? correlationId = args.BasicProperties?.CorrelationId;
+                            _channel.QueueDeclareAsync(routingKey, true, false, false).Wait();
+
+                            if (
+                            routingKey.Equals(DeleteConstantReadingListQueue) ||
+                            routingKey.Equals(DeleteUserConstantDataQueue)
+                            )
                             {
-                                ReplyTo = args.BasicProperties.ReplyTo,
-                                CorrelationId = correlationId,
-                            };
-                            _channel.BasicPublishAsync(exchange: string.Empty, routingKey: routingKey, mandatory: true, basicProperties: prop, body: args.Body);
+                                _channel.BasicPublishAsync(exchange: string.Empty, routingKey: routingKey, mandatory: true, body: args.Body);
+                                return Task.CompletedTask;
+                            }
+
+
+                            if (_rabbitTaskDictonary.CheakTaskLive(correlationId))
+                            {
+                                var prop = new BasicProperties()
+                                {
+                                    ReplyTo = args.BasicProperties.ReplyTo,
+                                    CorrelationId = correlationId,
+                                };
+                                _channel.BasicPublishAsync(exchange: string.Empty, routingKey: routingKey, mandatory: true, basicProperties: prop, body: args.Body);
+                            }
+
                         }
 
                     }
+                    return Task.CompletedTask;
+                };
+                isDeclareQueues = true;
+            }
+        }
 
-                }
-                return Task.CompletedTask;
+        public Task StartSagaConsumers()
+        {
+            var ResultConstantListConsumer = new AsyncEventingBasicConsumer(_channel);
+            var ResultUserDataConsumer = new AsyncEventingBasicConsumer(_channel);
+
+            ResultConstantListConsumer.ReceivedAsync += async (ch, ea) =>
+            {
+                await _channel.BasicAckAsync(ea.DeliveryTag, false);
+
+                string rebitResultJson = Encoding.UTF8.GetString(ea.Body.Span);
+                CreateUserSageResult rabbitResult = JsonSerializer.Deserialize<CreateUserSageResult>(rebitResultJson);
+                bool result = _rabbitTaskDictonary.RealizeTask(ea.BasicProperties.CorrelationId!, rabbitResult!);
             };
+
+             _channel.BasicConsumeAsync(
+                ResultCreateConstantReadingListForUserQueue,
+                false,
+                ResultConstantListConsumer
+                );
+
+              ResultUserDataConsumer.ReceivedAsync += async (ch, ea) =>
+              {
+                  await _channel.BasicAckAsync(ea.DeliveryTag, false);
+
+                  string rebitResultJson = Encoding.UTF8.GetString(ea.Body.Span);
+                  CreateUserSageResult rabbitResult = JsonSerializer.Deserialize<CreateUserSageResult>(rebitResultJson);
+                  bool result = _rabbitTaskDictonary.RealizeTask(ea.BasicProperties.CorrelationId!, rabbitResult!);
+              };
+
+              _channel.BasicConsumeAsync(
+                ResultCreateUserConstantDataQueue,
+                false,
+                ResultUserDataConsumer
+                );
+
+            return Task.CompletedTask;
         }
 
         public async Task<Result> Handle(RegisterUserCred UserCreds)

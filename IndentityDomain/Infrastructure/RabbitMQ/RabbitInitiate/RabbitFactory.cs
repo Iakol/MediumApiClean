@@ -25,12 +25,23 @@ namespace IndentityDomain.Infrastructure.RabbitMQ.RabbitInitiate
 
             _connection = _connectionFactory.CreateConnectionAsync().Result;
             _channel = _connection.CreateChannelAsync().Result;
-            
+
         }
-        public IChannel GetConnectionChanel() 
+        public IChannel GetConnectionChanel()
         {
 
             return _channel;
+        }
+
+        public Dictionary<string, object?> CreateDeadLeaterArgumentsForQueue(string DeadQueue, int ttlTime) 
+        {
+            return new Dictionary<string, object?>()
+            {
+                {"x-message-ttl",ttlTime },
+                {"x-dead-letter-exchange","" },
+                {"x-dead-letter-routing-key",DeadQueue },
+            };
+
         }
 
     }
