@@ -30,8 +30,8 @@ namespace TopicDomainTest.Infrastructure.Repository
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile<MapperProfile>();
-            });
+                cfg.AddProfile(new MapperProfile());
+            },null);
 
             config.AssertConfigurationIsValid();
             return config.CreateMapper();

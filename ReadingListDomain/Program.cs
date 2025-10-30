@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using ReadingListDomain.Application.AutoMapper;
 using ReadingListDomain.Application.Interfaces;
 using ReadingListDomain.Application.UnitsOfWork;
 using ReadingListDomain.Application.UseCases;
@@ -23,8 +25,9 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDBContext>(option =>
 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddAutoMapper(typeof(Program));
-
+builder.Services.AddAutoMapper(cfg => {
+    cfg.AddProfile<MapperProfile>();
+});
 if (envName.Equals("Development") || envName.Equals("DevelopmentTestUser"))
 {
     builder.Services.AddSwaggerGen();

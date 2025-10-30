@@ -8,7 +8,7 @@ using ResponceDomain.Presentation.UseCases;
 
 namespace ResponceDomain.Application.UseCases
 {
-    public class AddClapsToResponceCase : IAddClapsToResponce
+    public class AddClapsToResponceCase : IAddClapsToResponceCase
     {
         private readonly IAddClapsToResponceUnit _addClapsToResponceUnit;
         private readonly IUpdateClapsToResponceUnit _updateClapsToResponceUnit;

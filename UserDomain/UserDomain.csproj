@@ -32,7 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Interfaces\UnitOfWork\" />
     <Folder Include="Application\Interfaces\Sevices\" />
     <Folder Include="Presentation\RabbitConsumers\" />
   </ItemGroup>

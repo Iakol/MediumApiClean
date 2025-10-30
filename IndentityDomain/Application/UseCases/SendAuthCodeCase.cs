@@ -4,7 +4,7 @@ using IndentityDomain.Presentation.UserCases;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.OpenApi.Extensions;
-using ReadingListDomain.Application.DTO;
+using IndentityDomain.Application.DTO;
 
 namespace IndentityDomain.Application.UseCases
 {

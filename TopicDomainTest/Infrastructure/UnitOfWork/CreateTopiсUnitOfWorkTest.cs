@@ -22,7 +22,7 @@ namespace TopicDomainTest.Infrastructure.UnitOfWork
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<MapperProfile>();
-            });
+            },null);
 
             config.AssertConfigurationIsValid();
             return config.CreateMapper();

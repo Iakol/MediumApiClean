@@ -4,7 +4,7 @@ namespace UserDomain.Domain
 {
     public class UserMemberShip
     {
-
+        public UserMemberShip() { }
         public UserMemberShip(string userWrapperId, bool isActive, UserMemberShipTypeEnum type, DateTime? startAt, DateTime? endAt)
         {
             UserWrapperId = userWrapperId;
@@ -13,6 +13,8 @@ namespace UserDomain.Domain
             StartAt = startAt;
             EndAt = endAt;
         }
+
+        public static UserMemberShip Register(string UserId) => new UserMemberShip(UserId,false, UserMemberShipTypeEnum.Base,null,null);
 
         public string UserWrapperId { get; private set; }
 

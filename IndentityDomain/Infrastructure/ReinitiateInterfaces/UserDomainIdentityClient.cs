@@ -1,7 +1,7 @@
 ﻿namespace IndentityDomain.Infrastructure.ReinitiateInterfaces
 {
-    public interface UserDomainIdentityClient
-    {
-        public
-    }
+    //public interface UserDomainIdentityClient
+    //{
+    //    public
+    //}
 }

@@ -13,9 +13,16 @@ namespace ResponceDomain.Infrastructure.DataBase.Repositories
         private readonly AppDBContext _db;
         private readonly IMapper _mapper;
 
-        public Task AddResponce(Responce responce)
+        public ResponceRepository(AppDBContext db, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _db = db;
+            _mapper = mapper;
+        }
+
+        public async Task AddResponce(Responce responce)
+        {
+            ResponceModel responceToAdd = _mapper.Map<ResponceModel>(responce);
+            await _db.AddAsync(responceToAdd);
         }
 
         public async Task DeleteResponceList(List<int> responcesList)
@@ -45,19 +52,20 @@ namespace ResponceDomain.Infrastructure.DataBase.Repositories
 
         public async Task<IEnumerable<int>> GetTreeFlatListOfResponceIDsByParent(int Parentid)
         {
-            IEnumerable<int> flatTree = _db.Database
+            IEnumerable<int> flatTree = await _db.Database
                                 .SqlQueryRaw<int>(@"
                                 WITH RecursiveCTE AS (
-                                    SELECT ResponceId 
+                                    SELECT * 
                                     FROM Responces 
                                     WHERE ResponceId = {0}
                                     UNION ALL
-                                    SELECT r.ResponceId
+                                    SELECT r.*
                                     FROM Responces r
-                                    INNER JOIN RecursiveCTE rc ON r.BaseResponceId = rc.ResponceId
+                                    INNER JOIN RecursiveCTE rc ON r.BaseResponseId = rc.ResponceId
                                 )
-                                SELECT ResponceId FROM RecursiveCTE
-                            ", Parentid);
+                                SELECT * FROM RecursiveCTE
+                                ", Parentid).ToListAsync();
+
 
             return flatTree;
         }

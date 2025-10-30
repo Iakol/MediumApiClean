@@ -4,21 +4,30 @@ namespace UserDomain.Domain
 {
     public class UserWrapper
     {
-        public string UserId { get; private set; }
-        public string Tag { get; private set; } 
+        public string UserWrapperId { get; private set; }
+
+
+        private string _Tag
+        {
+            get; set;
+        }
+
+        public string Tag { get => _Tag; set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentNullException("Tag can`t be empty");
+                }
+                _Tag = value;
+            }
+        }
+
+        public UserWrapper() { }   
 
         public UserWrapper(string UserId,string Tag){
-            this.UserId = UserId;
-            SetTag(Tag);
+            this.UserWrapperId = UserId;
+            this.Tag = Tag;
             }
-        public void SetTag(string Tag) 
-        {
-            if (string.IsNullOrEmpty( Tag)) 
-            {
-                throw new ArgumentNullException("Tag can`t be empty");
-            }
-            this.Tag = Tag.Trim();
-        }
 
 
     }

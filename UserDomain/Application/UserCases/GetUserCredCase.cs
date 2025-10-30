@@ -8,6 +8,8 @@ namespace UserDomain.Application.UserCases
 {
     public class GetUserCredCase( IUserProfileRepository _userProfileRepository , IMapper _mapper)
     {
+        
+
         public async Task<UserCredDTO> GetUsetCred(string Id) 
         {
 

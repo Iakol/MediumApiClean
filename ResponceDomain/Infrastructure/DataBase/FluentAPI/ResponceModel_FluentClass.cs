@@ -9,6 +9,11 @@ namespace ResponceDomain.Infrastructure.DataBase.FluentAPI
         public void Configure(EntityTypeBuilder<ResponceModel> builder)
         {
             builder.HasKey(r => r.ResponceId);
+
+            builder.HasOne(r => r.BaseResponce).WithMany(pr => pr.ChildResponses).HasForeignKey(r => r.BaseResponseId).OnDelete(DeleteBehavior.Restrict);
+
+
+
         }
     }
 }

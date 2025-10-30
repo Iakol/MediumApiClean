@@ -12,9 +12,16 @@ namespace ResponceDomain.Infrastructure.DataBase.Repositories
     {
         private readonly AppDBContext _db;
         private readonly IMapper _mapper;
-        public Task AddClapsToResponceEntity(ClapsToResponceOfUsers clapsToResponceOfUsers)
+        public ClapsToResponceOfUsersIterfaces(AppDBContext db, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _db = db;
+            _mapper = mapper;
+        }
+
+        public async Task AddClapsToResponceEntity(ClapsToResponceOfUsers clapsToResponceOfUsers)
+        {
+            ClapsToResponceOfUsersModel newClaps = _mapper.Map<ClapsToResponceOfUsersModel>(clapsToResponceOfUsers);
+            await _db.Claps.AddAsync(newClaps);
         }
 
         public async Task DeleteClapsToResponceEntityByClapsList(IEnumerable<ClapsToResponceOfUsers> claps)
@@ -24,20 +31,6 @@ namespace ResponceDomain.Infrastructure.DataBase.Repositories
             _db.Claps.RemoveRange(clapsModel);
         }
 
-        public Task DeleteClapsToResponceEntityByResponce(int responceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ClapsToResponceOfUsers> getAllClapsToResponceOfUsers(int responceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> GetClapsCount(int responceId)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<Dictionary<int, int>> getClapsCountToResponceOfUsersByRespocnceList(List<int> responceIds)
         {
@@ -51,19 +44,26 @@ namespace ResponceDomain.Infrastructure.DataBase.Repositories
 
         }
 
-        public Task<ClapsToResponceOfUsers> getClapsToResponceOfUsers(int responceId, string userId)
+        public async Task<ClapsToResponceOfUsers> getClapsToResponceOfUsers(int responceId, string userId)
         {
-            throw new NotImplementedException();
+            ClapsToResponceOfUsersModel clapsModel = await _db.Claps.FirstOrDefaultAsync(c => (c.ResponceId == responceId && c.UserId.Equals(userId)));
+            return _mapper.Map<ClapsToResponceOfUsers>(clapsModel);
         }
 
-        public Task<Dictionary<int, List<ClapsToResponceOfUsers>>> getClapsToResponceOfUsersByRespocnceList(List<int> responceIds)
+        public async Task<Dictionary<int, List<ClapsToResponceOfUsers>>> getClapsToResponceOfUsersByRespocnceList(List<int> responceIds)
         {
-            throw new NotImplementedException();
+            List<ClapsToResponceOfUsersModel> AllClapsList = await _db.Claps.Where(c => responceIds.Contains(c.ResponceId)).ToListAsync();
+            List<ClapsToResponceOfUsers> Domains = _mapper.Map<List<ClapsToResponceOfUsers>>(AllClapsList);
+
+            return Domains.GroupBy(x => x.ResponceId).ToDictionary(x => x.Key, x => x.ToList());
+
+
         }
 
         public async Task UpdateClapsToResponce(ClapsToResponceOfUsers clapsToResponceOfUsers)
         {
-            await _mapper.Map(clapsToResponceOfUsers, _db.Responces.FindAsync(clapsToResponceOfUsers.ResponceId));
+            ClapsToResponceOfUsersModel clapstoUpdate = await _db.Claps.FindAsync(clapsToResponceOfUsers.UserId, clapsToResponceOfUsers.ResponceId);
+            _mapper.Map(clapsToResponceOfUsers, clapstoUpdate);
         }
     }
 }

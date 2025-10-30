@@ -5,7 +5,27 @@
         public int ResponceId { get; set; }
 
         public string UserId { get; set; }
-        public int ClapsCount { get; set; }
+
+        private int _ClapsCount { get; set; }
+        public int ClapsCount
+        {
+            get => _ClapsCount; set
+            {
+                if (value > 50)
+                {
+                    _ClapsCount = 50;
+                }
+                else if (value < _ClapsCount) 
+                {
+                    
+                }
+                else
+                {
+                    _ClapsCount = value;
+
+                }
+            }
+        }
 
         public ClapsToResponceOfUsers(int responceId, string userId, int clapsCount)
         {

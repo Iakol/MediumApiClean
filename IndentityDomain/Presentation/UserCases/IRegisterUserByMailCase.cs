@@ -1,4 +1,4 @@
-﻿using ReadingListDomain.Application.DTO;
+﻿using IndentityDomain.Application.DTO;
 
 namespace IndentityDomain.Presentation.UserCases
 {

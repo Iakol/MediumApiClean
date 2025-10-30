@@ -11,9 +11,10 @@ namespace ResponceDomain.Infrastructure.DataBase.UnitsOfWork
         IClapsToResponceOfUsersIterfaces _clapsToResponceOfUsersIterfaces;
         AppDBContext _db;
 
-        public UpdateClapsToResponceUnit(IClapsToResponceOfUsersIterfaces clapsToResponceOfUsersIterfaces, AppDBContext _db)
+        public UpdateClapsToResponceUnit(IClapsToResponceOfUsersIterfaces clapsToResponceOfUsersIterfaces, AppDBContext db)
         {
             _clapsToResponceOfUsersIterfaces = clapsToResponceOfUsersIterfaces;
+            _db = db;
         }
 
         public async Task UpdateClaps(ClapsToResponceOfUsers clapsToUpdate)

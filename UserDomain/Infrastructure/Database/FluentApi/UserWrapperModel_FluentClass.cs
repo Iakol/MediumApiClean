@@ -10,12 +10,12 @@ namespace MediumDataBaseManagerAzureApi.Data.FluentApi.User_Fluent
         public void Configure(EntityTypeBuilder<UserWrapperModel> builder)
         {
             // primary Key
-            builder.HasKey(x => x.UserId);
+            builder.HasKey(x => x.UserWrapperId);
             // Propetries
             // Relationship
 
 
-            builder.HasOne(u => u.User).WithOne(u => u.UserWrapper).HasForeignKey<UserWrapperModel>(u => u.UserId);
+            builder.HasOne(u => u.User).WithOne(u => u.UserWrapper).HasForeignKey<UserWrapperModel>(u => u.UserWrapperId);
 
 
 

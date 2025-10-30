@@ -1,8 +1,10 @@
-﻿namespace UserDomain.Infrastructure.Database.Models
+﻿using UserDomain.Infrastructure.Database.DBContext;
+
+namespace UserDomain.Infrastructure.Database.Models
 {
-    public class UserWrapperModel
+    public class UserWrapperModel : IPrimitiveModelKey
     {
-        public string UserId { get; set; }
+        public string UserWrapperId { get; set; }
         public UserModel User { get; set; }
         public UserProfileModel Profile { get; set; }
 

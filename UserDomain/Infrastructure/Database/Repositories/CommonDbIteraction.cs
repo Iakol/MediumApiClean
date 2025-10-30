@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.Execution;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection.Metadata;
@@ -8,7 +9,7 @@ using UserDomain.Infrastructure.Database.DBContext;
 
 namespace UserDomain.Infrastructure.Database.Repositories
 {
-    public class CommonDbIteraction<Model, Domain, PrimaryKeyType>(AppDbContext _db, IMapper _mappper) : IGenericDBRepository<Model, Domain, PrimaryKeyType> where Model : class where Domain : class
+    public class CommonDbIteraction<Model, Domain, PrimaryKeyType>(AppDbContext _db, IMapper _mappper) : IGenericDBRepository<Model, Domain, PrimaryKeyType> where Model : class , IPrimitiveModelKey where Domain : class
     {
         public Expression<Func<Model,bool>> WhereIdEqualsPrimaryKeyExpression(PrimaryKeyType id) 
         {
@@ -28,17 +29,17 @@ namespace UserDomain.Infrastructure.Database.Repositories
             var lambda = Expression.Lambda<Func<Model, bool>>(equals, expresionPatament);
             return lambda;
         }
-        public async Task AddAsync(Domain entity) 
+        public virtual async Task AddAsync(Domain entity) 
         {
             var model = _mappper.Map<Model>(entity);
             await _db.Set<Model>().AddAsync(model);
         }
 
-        public async Task DeleteAsync(PrimaryKeyType id)
+        public virtual async Task DeleteAsync(PrimaryKeyType id)
         {
             
 
-            Model EntityToDelete = _db.Set<Model>().FirstOrDefault(WhereIdEqualsPrimaryKeyExpression(id));
+            Model EntityToDelete = _db.Set<Model>().FirstOrDefault(m => m.UserWrapperId.Equals(id));
 
             if (EntityToDelete != null) 
             {
@@ -46,18 +47,28 @@ namespace UserDomain.Infrastructure.Database.Repositories
             }
         }
 
-        public async Task<Domain?> GetEntityAsync(PrimaryKeyType id)
+        public virtual async Task<Domain?> GetEntityAsync(PrimaryKeyType id)
         {
-            Model getModel =   _db.Set<Model>().FirstOrDefault(WhereIdEqualsPrimaryKeyExpression(id));     
+            Model getModel =   _db.Set<Model>().FirstOrDefault(m => m.UserWrapperId.Equals(id));     
             return _mappper.Map<Domain>(getModel);         
         }
 
-        public async Task UpdateAsync(Domain entity)
+        public virtual async Task UpdateAsync(Domain entity)
         {
             var Model = _mappper.Map<Model>(entity);
             _db.Set<Model>().Update(Model);
         }
 
-
+        public virtual async Task<IEnumerable<Domain>> GetEntityListByListIdsAsync(IEnumerable<PrimaryKeyType> id)
+        {
+            if (typeof(PrimaryKeyType) == typeof(string))
+            {
+                IEnumerable<string> ids = id.Cast<string>();
+                IEnumerable<Model> listOfModels = await _db.Set<Model>().Where(m => ids.Contains(m.UserWrapperId)).ToListAsync();
+                return _mappper.Map<IEnumerable<Domain>>(listOfModels);
+            }
+            return null;
+            
+        }
     }
 }

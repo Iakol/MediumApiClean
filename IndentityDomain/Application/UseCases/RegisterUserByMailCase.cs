@@ -3,7 +3,7 @@ using IndentityDomain.Application.Interfaces;
 using IndentityDomain.Presentation.UserCases;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Distributed;
-using ReadingListDomain.Application.DTO;
+using IndentityDomain.Application.DTO;
 using System.Windows.Input;
 
 namespace IndentityDomain.Application.UseCases

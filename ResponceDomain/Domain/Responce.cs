@@ -14,7 +14,7 @@ namespace ResponceDomain.Domain
 
         public ReaderTypeEnum ReaderTypeEnum { get; set; }
         public int? BaseResponseId { get; set; }
-        public List<Responce> ChildeResponses { get; set; }
+        public List<Responce> ChildResponses { get; set; }
 
 
         public Responce()
@@ -22,13 +22,14 @@ namespace ResponceDomain.Domain
 
         }
 
-        public Responce(string userId, string readId, string textOfReply, ReaderTypeEnum readerTypeEnum)
+        public Responce(string userId, string readId, string textOfReply, ReaderTypeEnum readerTypeEnum,int? BaseResponseId)
         {
             UserId = userId;
             ReadId = readId;
             TextOfReply = textOfReply;
             ReaderTypeEnum = readerTypeEnum;
-            CreateAt = DateTime.Now;    
+            CreateAt = DateTime.Now;
+            this.BaseResponseId = BaseResponseId;
         }
     }
 

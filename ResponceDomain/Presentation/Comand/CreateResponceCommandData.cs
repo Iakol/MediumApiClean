@@ -9,5 +9,7 @@ namespace ResponceDomain.Presentation.Comand
         public ReaderTypeEnum type { get; set; }
 
         public string text { get; set; }
+
+        public int? BaseResponce {get;  set; }
     }
 }

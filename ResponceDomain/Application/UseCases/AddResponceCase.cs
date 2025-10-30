@@ -8,7 +8,7 @@ using ResponceDomain.Presentation.UseCases;
 
 namespace ResponceDomain.Application.UseCases
 {
-    public class AddResponceCase : IAddResponce
+    public class AddResponceCase : IAddResponceCase
     {
         private readonly IAddResponceUnit _addResponceUnit;
 
@@ -32,7 +32,7 @@ namespace ResponceDomain.Application.UseCases
 
             try
             {
-                await _addResponceUnit.addResponce(new Responce(userId, NewResponce.itemId, NewResponce.text, NewResponce.type));
+                await _addResponceUnit.addResponce(new Responce(userId, NewResponce.itemId, NewResponce.text, NewResponce.type, NewResponce.BaseResponce));
                 return Result.Success();
             }
             catch (Exception ex) 

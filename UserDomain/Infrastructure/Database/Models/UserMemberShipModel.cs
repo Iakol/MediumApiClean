@@ -1,8 +1,9 @@
 ﻿using UserDomain.Enum;
+using UserDomain.Infrastructure.Database.DBContext;
 
 namespace UserDomain.Infrastructure.Database.Models
 {
-    public class UserMemberShipModel
+    public class UserMemberShipModel : IPrimitiveModelKey
     {
         public string UserWrapperId { get; set; }
         public UserWrapperModel UserWrapper { get; set; }

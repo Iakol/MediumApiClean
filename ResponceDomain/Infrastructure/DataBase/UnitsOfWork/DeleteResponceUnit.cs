@@ -1,8 +1,10 @@
-﻿using ResponceDomain.Application.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using ResponceDomain.Application.Interfaces;
 using ResponceDomain.Application.UnitsOfWorks;
 using ResponceDomain.Domain;
 using ResponceDomain.Infrastructure.DataBase.DBContex;
-using ResponceDomain.Infrastructure.DataBase.Repositories;
+
 
 namespace ResponceDomain.Infrastructure.DataBase.UnitsOfWork
 {
@@ -20,14 +22,29 @@ namespace ResponceDomain.Infrastructure.DataBase.UnitsOfWork
         }
         public async Task DeleteResponce(int ParentId)
         {
-            IEnumerable<int> ids = await _responceRepository.GetTreeFlatListOfResponceIDsByParent(ParentId);
+            await using  IDbContextTransaction tx = await _db.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
 
-            IEnumerable<ClapsToResponceOfUsers> claps = (await _clapsToResponceOfUsersIterfaces.getClapsToResponceOfUsersByRespocnceList(ids.ToList())).SelectMany(r => r.Value);
+            try
+            {
 
-            await _clapsToResponceOfUsersIterfaces.DeleteClapsToResponceEntityByClapsList(claps);
-            await _responceRepository.DeleteResponceList(ids.ToList());
+                IEnumerable<int> ids = await _responceRepository.GetTreeFlatListOfResponceIDsByParent(ParentId);
 
-            await _db.SaveChangesAsync();
+                IEnumerable<ClapsToResponceOfUsers> claps = (await _clapsToResponceOfUsersIterfaces.getClapsToResponceOfUsersByRespocnceList(ids.ToList())).SelectMany(r => r.Value);
+
+                await _clapsToResponceOfUsersIterfaces.DeleteClapsToResponceEntityByClapsList(claps);
+                await _responceRepository.DeleteResponceList(ids.ToList());
+
+                await _db.SaveChangesAsync();
+                tx.Commit();
+
+            }
+            catch (Exception ex)
+            {
+
+                tx.Rollback();
+                throw;
+            }
+
 
         }
     }

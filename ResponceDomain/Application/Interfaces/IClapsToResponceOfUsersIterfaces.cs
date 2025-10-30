@@ -6,7 +6,6 @@ namespace ResponceDomain.Application.Interfaces
     public interface IClapsToResponceOfUsersIterfaces
     {
 
-        public Task<ClapsToResponceOfUsers> getAllClapsToResponceOfUsers(int responceId);
         public Task<ClapsToResponceOfUsers> getClapsToResponceOfUsers(int responceId, string userId);
         public Task<Dictionary<int, List<ClapsToResponceOfUsers>>> getClapsToResponceOfUsersByRespocnceList(List<int> responceIds );
         public Task<Dictionary<int, int>> getClapsCountToResponceOfUsersByRespocnceList(List<int> responceIds);
@@ -15,7 +14,6 @@ namespace ResponceDomain.Application.Interfaces
 
         public Task AddClapsToResponceEntity(ClapsToResponceOfUsers clapsToResponceOfUsers);
 
-        public Task DeleteClapsToResponceEntityByResponce(int responceId);
         public Task DeleteClapsToResponceEntityByClapsList(IEnumerable<ClapsToResponceOfUsers> claps);
 
     }

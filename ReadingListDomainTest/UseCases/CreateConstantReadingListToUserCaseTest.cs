@@ -21,7 +21,7 @@ namespace ReadingListDomainTest.UseCases
         {
             _logger = new Mock<ILogger<CreateConstantReadingListToUserCase>>();
             _createReadingListUnit = new Mock<ICreateReadingListUnit>();
-            _createConstantReadingListToUserCase = new CreateConstantReadingListToUserCase(_logger.Object, _createReadingListUnit.Object);
+            //_createConstantReadingListToUserCase = new CreateConstantReadingListToUserCase(_logger.Object, _createReadingListUnit.Object);
 
 
         }

@@ -4,17 +4,19 @@ using ResponceDomain.Application.Interfaces;
 using ResponceDomain.Application.Services;
 using ResponceDomain.Domain;
 using ResponceDomain.Presentation.UseCases;
+using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace ResponceDomain.Application.UseCases
 {
-    public class GetResponcesForItem : IGetResponcesForItem
+    public class GetResponcesForItemCase : IGetResponcesForItemCase
     {
         private readonly IResponceRepository _responceRepository;
         private readonly IClapsToResponceOfUsersIterfaces _ResponceClapsOfUsersIterfaces;
         private readonly CreateResponceTreeByResponceTreeBuilder _ResponceTreeBuilder;
 
-        public GetResponcesForItem(IResponceRepository responceRepository, IClapsToResponceOfUsersIterfaces responceClapsOfUsersIterfaces, CreateResponceTreeByResponceTreeBuilder responceTreeBuilder)
+        public GetResponcesForItemCase(IResponceRepository responceRepository, IClapsToResponceOfUsersIterfaces responceClapsOfUsersIterfaces, CreateResponceTreeByResponceTreeBuilder responceTreeBuilder)
         {
             _responceRepository = responceRepository;
             _ResponceClapsOfUsersIterfaces = responceClapsOfUsersIterfaces;
@@ -30,12 +32,18 @@ namespace ResponceDomain.Application.UseCases
 
             try
             {
+                //Stopwatch stopwatch = new Stopwatch();
+                //stopwatch.Start();
+
                 HashSet<Responce> responces = (await _responceRepository.GetAllResponcesByItem(itemId)).ToHashSet();
 
                 Dictionary<int, int> AllResponceClapsBucket = await _ResponceClapsOfUsersIterfaces.getClapsCountToResponceOfUsersByRespocnceList(responces.Select(r => r.ResponceId).ToList());
 
-                
-                List< ResponceDTO > responceDTOs = _ResponceTreeBuilder.BuildTree(responces, AllResponceClapsBucket).ToList();
+
+                List<ResponceDTO> responceDTOs = _ResponceTreeBuilder.BuildTree(responces, AllResponceClapsBucket).ToList();
+                //stopwatch.Stop();
+                //TimeSpan ts = stopwatch.Elapsed;
+                //Console.WriteLine(ts);
                 return Result<List<ResponceDTO>>.Success(responceDTOs);
             }
             catch (Exception ex)

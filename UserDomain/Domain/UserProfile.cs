@@ -2,6 +2,7 @@
 {
     public class UserProfile
     {
+        public UserProfile() { }
 
         public UserProfile(string UserWrapperId, string LogoUrl, string About)
         {

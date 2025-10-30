@@ -10,7 +10,7 @@ namespace UserDomain.Application.AutoMapper
         public MapperProfile() 
         {
             CreateMap<UserWrapper, UserWrapperModel>()
-                .ForMember(dest => dest.UserId, opt => opt.MapFrom(scr => scr.UserId))
+                .ForMember(dest => dest.UserWrapperId, opt => opt.MapFrom(scr => scr.UserWrapperId))
                  .ForMember(dest => dest.Tag, opt => opt.MapFrom(scr => scr.Tag)).ReverseMap();
 
             CreateMap<UserProfile, UserCredDTO>()

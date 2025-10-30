@@ -7,12 +7,12 @@ using ResponceDomain.Presentation.UseCases;
 
 namespace ResponceDomain.Application.UseCases
 {
-    public class UpdateResponce : IUpdateResponce
+    public class UpdateResponceCase : IUpdateResponceCase
     {
         private readonly IUpdateResponceUnit _updateResponceUnit;
         private readonly IResponceRepository _responceRepository;
 
-        public UpdateResponce(IUpdateResponceUnit updateResponceUnit, IResponceRepository responceRepository)
+        public UpdateResponceCase(IUpdateResponceUnit updateResponceUnit, IResponceRepository responceRepository)
         {
             _updateResponceUnit = updateResponceUnit;
             _responceRepository = responceRepository;

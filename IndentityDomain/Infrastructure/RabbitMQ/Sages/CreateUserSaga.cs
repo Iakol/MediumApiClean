@@ -2,7 +2,7 @@
 using IndentityDomain.Infrastructure.RabbitMQ.RabbitInitiate;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using ReadingListDomain.Application.DTO;
+using IndentityDomain.Application.DTO;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;

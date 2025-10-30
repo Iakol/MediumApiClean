@@ -4,7 +4,7 @@ using ResponceDomain.Presentation.Comand;
 
 namespace ResponceDomain.Presentation.UseCases
 {
-    public interface IAddResponce
+    public interface IAddResponceCase
     {
         public Task<Result> Handle(CreateResponceCommandData NewResponce, string userId);
 

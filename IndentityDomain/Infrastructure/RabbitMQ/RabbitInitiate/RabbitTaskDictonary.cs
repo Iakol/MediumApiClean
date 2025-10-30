@@ -1,4 +1,4 @@
-﻿using ReadingListDomain.Application.DTO;
+﻿using IndentityDomain.Application.DTO;
 using System.Collections.Concurrent;
 
 namespace IndentityDomain.Infrastructure.RabbitMQ.RabbitInitiate

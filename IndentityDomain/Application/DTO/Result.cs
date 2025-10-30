@@ -1,7 +1,7 @@
 ﻿using IndentityDomain.Infrastructure.RabbitMQ.Sages;
 using System.Data.SqlTypes;
 
-namespace ReadingListDomain.Application.DTO
+namespace IndentityDomain.Application.DTO
 {
     public class Result
     {

@@ -1,4 +1,6 @@
-﻿namespace IndentityDomain.Presentation.UserCases
+﻿using IndentityDomain.Application.DTO;
+
+namespace IndentityDomain.Presentation.UserCases
 {
     public interface IRegisterByGoogleCase
     {

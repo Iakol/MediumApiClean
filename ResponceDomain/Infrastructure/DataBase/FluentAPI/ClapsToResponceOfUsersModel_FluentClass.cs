@@ -10,7 +10,7 @@ namespace ResponceDomain.Infrastructure.DataBase.FluentAPI
         {
             builder.HasKey(c => new { c.UserId, c.ResponceId });
 
-            builder.HasOne(c => c.Responce).WithMany(r => r.ClapsToResponceOfUsersModels).HasForeignKey(c => c.ResponceId);
+            builder.HasOne(c => c.Responce).WithMany(r => r.ClapsToResponceOfUsersModels).HasForeignKey(c => c.ResponceId).OnDelete(DeleteBehavior.Cascade); ;
         }
     }
 }

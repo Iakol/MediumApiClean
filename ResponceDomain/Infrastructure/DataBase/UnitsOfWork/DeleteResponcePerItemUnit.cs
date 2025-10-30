@@ -1,7 +1,9 @@
-﻿using ResponceDomain.Application.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using ResponceDomain.Application.Interfaces;
 using ResponceDomain.Application.UnitsOfWorks;
 using ResponceDomain.Domain;
 using ResponceDomain.Infrastructure.DataBase.DBContex;
+using System.Data;
 
 namespace ResponceDomain.Infrastructure.DataBase.UnitsOfWork
 {
@@ -20,13 +22,24 @@ namespace ResponceDomain.Infrastructure.DataBase.UnitsOfWork
 
         public async Task DeleteResponce(string ItemId)
         {
-            IEnumerable<Responce> responces = await _responceRepository.GetAllResponcesByItem(ItemId);
-            IEnumerable<ClapsToResponceOfUsers> clapsToResponceOfUsers = (await _responceOfUsersIterfaces
-                .getClapsToResponceOfUsersByRespocnceList(responces.Select(r => r.ResponceId).ToList())).SelectMany(c => c.Value);
+            await using var tx = await _db.Database.BeginTransactionAsync(IsolationLevel.Serializable);
 
-            await _responceOfUsersIterfaces.DeleteClapsToResponceEntityByClapsList(clapsToResponceOfUsers);
-            await _responceRepository.DeleteResponceList(responces.ToList());
-            await _db.SaveChangesAsync();
+            try
+            {
+                IEnumerable<Responce> responces = await _responceRepository.GetAllResponcesByItem(ItemId);
+                IEnumerable<ClapsToResponceOfUsers> clapsToResponceOfUsers = (await _responceOfUsersIterfaces
+                    .getClapsToResponceOfUsersByRespocnceList(responces.Select(r => r.ResponceId).ToList())).SelectMany(c => c.Value);
+
+                await _responceOfUsersIterfaces.DeleteClapsToResponceEntityByClapsList(clapsToResponceOfUsers);
+                await _responceRepository.DeleteResponceList(responces.ToList());
+                await _db.SaveChangesAsync();
+                tx.Commit();
+            }
+            catch (Exception ex) 
+            {
+                tx.Rollback();
+                throw;
+            }
         }
 
     }

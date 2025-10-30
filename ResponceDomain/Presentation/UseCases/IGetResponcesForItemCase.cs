@@ -2,7 +2,7 @@
 
 namespace ResponceDomain.Presentation.UseCases
 {
-    public interface IGetResponcesForItem
+    public interface IGetResponcesForItemCase
     {
         public Task<Result<List<ResponceDTO>>> Handle(string itemId);
     }

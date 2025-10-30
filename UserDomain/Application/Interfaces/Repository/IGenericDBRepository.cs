@@ -7,6 +7,7 @@
         public Task DeleteAsync(PrimaryKeyType id);
         public Task<Domain?> GetEntityAsync(PrimaryKeyType id);
 
+        public Task<IEnumerable<Domain>> GetEntityListByListIdsAsync(IEnumerable<PrimaryKeyType> id);
 
 
     }
